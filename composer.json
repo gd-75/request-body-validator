@@ -1,0 +1,16 @@
+{
+    "name": "gd-75/request-body-validator",
+    "description": "A simple PSR-7 compatible request body content validator",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "GD75\\RequestBodyValidator\\": "src"
+        }
+    },
+    "require": {
+        "php": ">=7.4",
+        "psr/http-message": "^1.0"
+    }
+}
