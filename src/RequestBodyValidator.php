@@ -58,9 +58,10 @@ final class RequestBodyValidator
     }
 
     /**
-     * @param int[]|string[]|boolean[] $fields
-     * @param int $criteria
-     * @return bool
+     * Validates multiple fields with one criteria.
+     * @param int[]|string[]|boolean[] $fields The name of the fields to validate.
+     * @param int $criteria The criteria to validate with (see class constants).
+     * @return bool Whether the criteria was validated on every field.
      */
     public function validateMultiple(array $fields, int $criteria): bool
     {
@@ -73,9 +74,10 @@ final class RequestBodyValidator
     }
 
     /**
-     * @param int|string|boolean $field
-     * @param int $criteria
-     * @return bool
+     * Validates a field with one criteria.
+     * @param mixed $field The name of the field to validate.
+     * @param int $criteria The criteria to validate with (see class constants).
+     * @return bool Whether the criteria was validated.
      */
     public function validateOne($field, int $criteria): bool
     {
@@ -96,5 +98,15 @@ final class RequestBodyValidator
         } else {
             return false;
         }
+    }
+
+    /**
+     * Retrieves the value of a single checkbox (ie `name=foo`).
+     * @param string $field The name of the field in the parsed body.
+     * @return bool Whether the checkbox was checked.
+     */
+    public function getSingleCheckboxVal(string $field): bool
+    {
+        return $this->validateOne($field, self::EXISTS);
     }
 }
