@@ -26,8 +26,11 @@ declare(strict_types=1);
 
 namespace GD75\RequestBodyValidator;
 
+use DateTime;
+use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 
 /**
  * Class RequestBodyValidator
@@ -39,6 +42,7 @@ final class RequestBodyValidator
     const NOT_EMPTY = 1;
     const NUMERIC = 2;
     const NOT_NUMERIC = 3;
+    const DATE_FORMAT = 4;
 
     private ServerRequestInterface $request;
 
@@ -92,6 +96,8 @@ final class RequestBodyValidator
                 return isset($parsedBody[$field]) && !empty($parsedBody[$field]) && is_numeric($parsedBody[$field]);
             } elseif ($criteria === self::NOT_NUMERIC) {
                 return isset($parsedBody[$field]) && !empty($parsedBody[$field]) && !is_numeric($parsedBody[$field]);
+            } elseif ($criteria === self::DATE_FORMAT){
+                return isset($parsedBody[$field]) && !empty($parsedBody[$field]) && strtotime($parsedBody[$field]) !== false;
             } else {
                 throw new InvalidArgumentException("Invalid validation '{$criteria}'.");
             }
@@ -108,5 +114,21 @@ final class RequestBodyValidator
     public function getSingleCheckboxVal(string $field): bool
     {
         return $this->validateOne($field, self::EXISTS);
+    }
+
+    /**
+     * Retrieves a DateTime object created from the a field of the request.
+     * To avoid any unexpected runtime exceptions, you should validate the field with the `DATE_FORMAT` criteria before.
+     * @param string $field The field to construct the datetime from.
+     * @return \DateTime The DateTime instance.
+     */
+    public function getDateTime(string $field): DateTime
+    {
+        $parsedBody = $this->request->getParsedBody();
+        try {
+            return new DateTime($parsedBody[$field]);
+        } catch (Exception $e) {
+            throw new RuntimeException("{$parsedBody[$field]} is not a valid date format", $e->getCode(), $e);
+        }
     }
 }
