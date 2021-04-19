@@ -52,7 +52,7 @@ final class RequestBodyValidator
 
         $parsedBody = $request->getParsedBody();
 
-        if ($parsedBody !== null || !is_array($parsedBody)) {
+        if ($parsedBody === null || !is_array($parsedBody)) {
             throw new InvalidArgumentException("Only supports parsed body in the forms of array.");
         }
     }
