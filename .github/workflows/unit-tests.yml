@@ -26,7 +26,7 @@ jobs:
         run: composer run-script test
   php8_0:
     runs-on: ubuntu-latest
-    name: "PHP 8_0"
+    name: "PHP 8.0"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
