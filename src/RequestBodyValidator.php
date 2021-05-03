@@ -33,7 +33,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
 /**
- * Class RequestBodyValidator
+ * Class RequestBodyValidator.
  * @package GD75\RequestBodyValidator
  */
 final class RequestBodyValidator
@@ -45,6 +45,7 @@ final class RequestBodyValidator
     const DATE_FORMAT = 4;
 
     private ServerRequestInterface $request;
+    private array $parsedBody;
 
     /**
      * RequestBodyValidator constructor.
@@ -58,6 +59,8 @@ final class RequestBodyValidator
 
         if ($parsedBody === null || !is_array($parsedBody)) {
             throw new InvalidArgumentException("Only supports parsed body in the forms of array.");
+        }else{
+            $this->parsedBody = $parsedBody;
         }
     }
 
@@ -85,19 +88,29 @@ final class RequestBodyValidator
      */
     public function validateOne($field, int $criteria): bool
     {
-        $parsedBody = $this->request->getParsedBody();
-
-        if ($parsedBody !== null) {
+        if ($this->parsedBody !== null) {
             if ($criteria === self::EXISTS) {
-                return isset($parsedBody[$field]);
+                return
+                    isset($this->parsedBody[$field]);
             } elseif ($criteria === self::NOT_EMPTY) {
-                return isset($parsedBody[$field]) && !empty($parsedBody[$field]);
+                return
+                    isset($this->parsedBody[$field])
+                    && !empty($this->parsedBody[$field]);
             } elseif ($criteria === self::NUMERIC) {
-                return isset($parsedBody[$field]) && !empty($parsedBody[$field]) && is_numeric($parsedBody[$field]);
+                return
+                    isset($this->parsedBody[$field])
+                    && !empty($this->parsedBody[$field])
+                    && is_numeric($this->parsedBody[$field]);
             } elseif ($criteria === self::NOT_NUMERIC) {
-                return isset($parsedBody[$field]) && !empty($parsedBody[$field]) && !is_numeric($parsedBody[$field]);
-            } elseif ($criteria === self::DATE_FORMAT){
-                return isset($parsedBody[$field]) && !empty($parsedBody[$field]) && strtotime($parsedBody[$field]) !== false;
+                return
+                    isset($this->parsedBody[$field])
+                    && !empty($this->parsedBody[$field])
+                    && !is_numeric($this->parsedBody[$field]);
+            } elseif ($criteria === self::DATE_FORMAT) {
+                return
+                    isset($this->parsedBody[$field])
+                    && !empty($this->parsedBody[$field])
+                    && strtotime($this->parsedBody[$field]) !== false;
             } else {
                 throw new InvalidArgumentException("Invalid validation '{$criteria}'.");
             }
@@ -121,14 +134,74 @@ final class RequestBodyValidator
      * To avoid any unexpected runtime exceptions, you should validate the field with the `DATE_FORMAT` criteria before.
      * @param string $field The field to construct the datetime from.
      * @return \DateTime The DateTime instance.
+     * @throws \RuntimeException If the format was not instantiable into a DateTime.
      */
     public function getDateTime(string $field): DateTime
     {
-        $parsedBody = $this->request->getParsedBody();
         try {
-            return new DateTime($parsedBody[$field]);
+            return new DateTime($this->parsedBody[$field]);
         } catch (Exception $e) {
-            throw new RuntimeException("{$parsedBody[$field]} is not a valid date format", $e->getCode(), $e);
+            throw new RuntimeException("{$this->parsedBody[$field]} is not a valid date format.", $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * Retrieves a numeric value as raw (input) value (either numeric string, int or float).
+     * @param string $field The field to retrieve.
+     * @return float|int The field value.
+     * @throws \RuntimeException If the field does not exist or is not numeric.
+     */
+    public function getNumeric(string $field)
+    {
+        if ($this->validateOne($field, self::NUMERIC)) {
+            return $this->parsedBody[$field];
+        } else {
+            throw new RuntimeException("{$field} does not exist or is not numeric.");
+        }
+    }
+
+    /**
+     * Retrieves a numeric value as integer.
+     * @param string $field The field to retrieve.
+     * @return int The field value.
+     * @throws \RuntimeException If the field does not exist or is not numeric.
+     */
+    public function getInt(string $field): int
+    {
+        if ($this->validateOne($field, self::NUMERIC)) {
+            return (int) $this->parsedBody[$field];
+        } else {
+            throw new RuntimeException("{$field} does not exist or is not numeric.");
+        }
+    }
+
+    /**
+     * Retrieves a numeric value as float.
+     * @param string $field The field to retrieve.
+     * @return float The field value.
+     * @throws \RuntimeException If the field does not exist or is not numeric.
+     */
+    public function getFloat(string $field): float
+    {
+        if ($this->validateOne($field, self::NUMERIC)) {
+            return (float) $this->parsedBody[$field];
+        } else {
+            throw new RuntimeException("{$field} does not exist or is not numeric.");
+        }
+    }
+
+    /**
+     * Retrieves a field as string.
+     * @param string $field The field to retrieve.
+     * @return string The field value.
+     * @throws \RuntimeException If the field does not exist.
+     */
+    public function getString(string $field): string
+    {
+        if ($this->validateOne($field, self::EXISTS)) {
+            return (string)$this->parsedBody[$field];
+        } else {
+            throw new RuntimeException("{$field} does not exist.");
         }
     }
 }
