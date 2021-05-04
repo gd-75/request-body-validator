@@ -46,6 +46,8 @@ class GettersTest extends TestCase
                 "numeric1" => "27.5",
                 "text" => "lorem",
                 "checkboxPresent" => true,
+                "floating" => 1.22,
+                "integer" => 36
             ]
         );
         $this->rbv = new RequestBodyValidator($request);
@@ -73,5 +75,52 @@ class GettersTest extends TestCase
     {
         $this->assertEquals(true, $this->rbv->getSingleCheckboxVal("checkboxPresent"));
         $this->assertEquals(false, $this->rbv->getSingleCheckboxVal("waitItDoesNotExist"));
+    }
+
+    /**
+     * Tests the numeric getter.
+     * @test
+     */
+    public function getNumeric()
+    {
+        $this->assertEquals("25", $this->rbv->getNumeric("numeric0"));
+        $this->assertEquals("27.5", $this->rbv->getNumeric("numeric1"));
+        $this->assertEquals(1.22, $this->rbv->getNumeric("floating"));
+        $this->assertEquals(36, $this->rbv->getNumeric("integer"));
+    }
+
+    /**
+     * Tests the int getter.
+     * @test
+     */
+    public function getInt()
+    {
+        $this->assertEquals(25, $this->rbv->getInt("numeric0"));
+        $this->assertEquals(27, $this->rbv->getInt("numeric1"));
+        $this->assertEquals(1, $this->rbv->getInt("floating"));
+        $this->assertEquals(36, $this->rbv->getInt("integer"));
+    }
+
+    /**
+     * Tests the float getter.
+     * @test
+     */
+    public function getFloat()
+    {
+        $this->assertEquals(25.0, $this->rbv->getFloat("numeric0"));
+        $this->assertEquals(27.5, $this->rbv->getFloat("numeric1"));
+        $this->assertEquals(1.22, $this->rbv->getFloat("floating"));
+        $this->assertEquals(36.0, $this->rbv->getFloat("integer"));
+    }
+
+    /**
+     * Tests the float getter.
+     * @test
+     */
+    public function getString()
+    {
+        $this->assertEquals("lorem", $this->rbv->getString("text"));
+        $this->assertEquals("27.5", $this->rbv->getString("numeric1"));
+        $this->assertEquals("1.22", $this->rbv->getString("floating"));
     }
 }
