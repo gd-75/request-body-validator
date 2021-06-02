@@ -62,9 +62,11 @@ class GettersTest extends TestCase
         $datetime = new DateTime("2021-03-21 18:08:23");
 
         $this->assertEquals($datetime, $this->rbv->getDateTime("datetime"));
+        $this->assertEquals(null, $this->rbv->getDateTime("invalidDatetime", false));
 
         $this->expectExceptionMessage("20203-21 180823 is not a valid date format");
         $this->rbv->getDateTime("invalidDatetime");
+
     }
 
     /**
@@ -87,6 +89,7 @@ class GettersTest extends TestCase
         $this->assertEquals("27.5", $this->rbv->getNumeric("numeric1"));
         $this->assertEquals(1.22, $this->rbv->getNumeric("floating"));
         $this->assertEquals(36, $this->rbv->getNumeric("integer"));
+        $this->assertEquals(null, $this->rbv->getNumeric("edfiwgjewig", false));
     }
 
     /**
@@ -99,6 +102,7 @@ class GettersTest extends TestCase
         $this->assertEquals(27, $this->rbv->getInt("numeric1"));
         $this->assertEquals(1, $this->rbv->getInt("floating"));
         $this->assertEquals(36, $this->rbv->getInt("integer"));
+        $this->assertEquals(null, $this->rbv->getInt("32zu542", false));
     }
 
     /**
@@ -111,6 +115,7 @@ class GettersTest extends TestCase
         $this->assertEquals(27.5, $this->rbv->getFloat("numeric1"));
         $this->assertEquals(1.22, $this->rbv->getFloat("floating"));
         $this->assertEquals(36.0, $this->rbv->getFloat("integer"));
+        $this->assertEquals(null, $this->rbv->getFloat("apwqfqow", false));
     }
 
     /**
@@ -122,5 +127,6 @@ class GettersTest extends TestCase
         $this->assertEquals("lorem", $this->rbv->getString("text"));
         $this->assertEquals("27.5", $this->rbv->getString("numeric1"));
         $this->assertEquals("1.22", $this->rbv->getString("floating"));
+        $this->assertEquals(null, $this->rbv->getString("qdqf", false));
     }
 }
