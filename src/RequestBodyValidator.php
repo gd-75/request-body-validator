@@ -64,7 +64,17 @@ final class RequestBodyValidator
             $this->parsedBody = $parsedBody;
         }
 
-        $errors = [];
+        $this->errors = [];
+    }
+
+    /**
+     * Retrieve all the fields that were tested and did not match the validation criteria, useful to log or even display
+     * them to the user in a nice and likeable way.
+     * @return array The fields that did not match their criteria.
+     */
+    public function getFieldsWithErrors() : array
+    {
+        return array_keys($this->errors);
     }
 
     /**
@@ -93,32 +103,36 @@ final class RequestBodyValidator
     {
         if ($this->parsedBody !== null) {
             if ($criteria === self::EXISTS) {
-                return
+                $status =
                     isset($this->parsedBody[$field]);
             } elseif ($criteria === self::NOT_EMPTY) {
-                return
+                $status =
                     isset($this->parsedBody[$field])
                     && !empty($this->parsedBody[$field]);
             } elseif ($criteria === self::NUMERIC) {
-                return
+                $status =
                     isset($this->parsedBody[$field])
                     && !empty($this->parsedBody[$field])
                     && is_numeric($this->parsedBody[$field]);
             } elseif ($criteria === self::NOT_NUMERIC) {
-                return
+                $status =
                     isset($this->parsedBody[$field])
                     && !empty($this->parsedBody[$field])
                     && !is_numeric($this->parsedBody[$field]);
             } elseif ($criteria === self::DATE_FORMAT) {
-                return
+                $status =
                     isset($this->parsedBody[$field])
                     && !empty($this->parsedBody[$field])
                     && strtotime($this->parsedBody[$field]) !== false;
             } else {
                 throw new InvalidArgumentException("Invalid validation '$criteria'.");
             }
+
+            if(!$status){
+                $this->errors[$field] = $criteria;
+            }
+            return $status;
         } else {
-            $this->errors[$field] = $criteria;
             return false;
         }
     }

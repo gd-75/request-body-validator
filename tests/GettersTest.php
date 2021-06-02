@@ -53,6 +53,17 @@ class GettersTest extends TestCase
         $this->rbv = new RequestBodyValidator($request);
     }
 
+
+    /**
+     * Tests the erroneous field retrieval.
+     * @test
+     */
+    public function errorsRetrievalTest()
+    {
+        $this->rbv->validateMultiple(["datetime", "invalidDatetime"], RequestBodyValidator::DATE_FORMAT);
+        $this->assertEquals(["invalidDatetime"], $this->rbv->getFieldsWithErrors());
+    }
+
     /**
      * Tests the datetime getter.
      * @test
@@ -66,7 +77,6 @@ class GettersTest extends TestCase
 
         $this->expectExceptionMessage("20203-21 180823 is not a valid date format");
         $this->rbv->getDateTime("invalidDatetime");
-
     }
 
     /**
