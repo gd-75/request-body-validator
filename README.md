@@ -3,6 +3,8 @@ A simple PHP library to make the validation of PSR-7 request's parsed bodies les
 
 > GUARANTEED REGEX FREE!
 
+**Note: The doc is not up to date anymore, I'll update it eventually**
+
 ## Example
 With the classic isset, empty and is_numeric functions
 ```php
