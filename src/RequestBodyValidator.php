@@ -46,6 +46,7 @@ final class RequestBodyValidator
 
     private ServerRequestInterface $request;
     private array $parsedBody;
+    private array $errors;
 
     /**
      * RequestBodyValidator constructor.
@@ -62,6 +63,8 @@ final class RequestBodyValidator
         }else{
             $this->parsedBody = $parsedBody;
         }
+
+        $errors = [];
     }
 
     /**
@@ -112,9 +115,10 @@ final class RequestBodyValidator
                     && !empty($this->parsedBody[$field])
                     && strtotime($this->parsedBody[$field]) !== false;
             } else {
-                throw new InvalidArgumentException("Invalid validation '{$criteria}'.");
+                throw new InvalidArgumentException("Invalid validation '$criteria'.");
             }
         } else {
+            $this->errors[$field] = $criteria;
             return false;
         }
     }
@@ -133,75 +137,100 @@ final class RequestBodyValidator
      * Retrieves a DateTime object created from the a field of the request.
      * To avoid any unexpected runtime exceptions, you should validate the field with the `DATE_FORMAT` criteria before.
      * @param string $field The field to construct the datetime from.
+     * @param bool $throw If the field is non-existent, whether to throw or simply return null, defaults to true.
      * @return \DateTime The DateTime instance.
      * @throws \RuntimeException If the format was not instantiable into a DateTime.
      */
-    public function getDateTime(string $field): DateTime
+    public function getDateTime(string $field, bool $throw = true): ?DateTime
     {
         try {
             return new DateTime($this->parsedBody[$field]);
         } catch (Exception $e) {
-            throw new RuntimeException("{$this->parsedBody[$field]} is not a valid date format.", $e->getCode(), $e);
+            if($throw){
+                throw new RuntimeException("{$this->parsedBody[$field]} is not a valid date format.", $e->getCode(), $e);
+            }else{
+                return null;
+            }
         }
     }
 
     /**
      * Retrieves a numeric value as raw (input) value (either numeric string, int or float).
      * @param string $field The field to retrieve.
+     * @param bool $throw If the field is non-existent, whether to throw or simply return null, defaults to true.
      * @return float|int The field value.
      * @throws \RuntimeException If the field does not exist or is not numeric.
      */
-    public function getNumeric(string $field)
+    public function getNumeric(string $field, bool $throw = true)
     {
         if ($this->validateOne($field, self::NUMERIC)) {
             return $this->parsedBody[$field];
         } else {
-            throw new RuntimeException("{$field} does not exist or is not numeric.");
+            if($throw){
+                throw new RuntimeException("$field does not exist or is not numeric.");
+            }else{
+                return null;
+            }
         }
     }
 
     /**
      * Retrieves a numeric value as integer.
      * @param string $field The field to retrieve.
+     * @param bool $throw If the field is non-existent, whether to throw or simply return null, defaults to true.
      * @return int The field value.
      * @throws \RuntimeException If the field does not exist or is not numeric.
      */
-    public function getInt(string $field): int
+    public function getInt(string $field, bool $throw = true): ?int
     {
         if ($this->validateOne($field, self::NUMERIC)) {
             return (int) $this->parsedBody[$field];
         } else {
-            throw new RuntimeException("{$field} does not exist or is not numeric.");
+            if($throw){
+                throw new RuntimeException("$field does not exist or is not numeric.");
+            }else{
+                return null;
+            }
         }
     }
 
     /**
      * Retrieves a numeric value as float.
      * @param string $field The field to retrieve.
+     * @param bool $throw If the field is non-existent, whether to throw or simply return null, defaults to true.
      * @return float The field value.
      * @throws \RuntimeException If the field does not exist or is not numeric.
      */
-    public function getFloat(string $field): float
+    public function getFloat(string $field, bool $throw = true): ?float
     {
         if ($this->validateOne($field, self::NUMERIC)) {
             return (float) $this->parsedBody[$field];
         } else {
-            throw new RuntimeException("{$field} does not exist or is not numeric.");
+            if($throw){
+                throw new RuntimeException("$field does not exist or is not numeric.");
+            }else{
+                return null;
+            }
         }
     }
 
     /**
      * Retrieves a field as string.
      * @param string $field The field to retrieve.
+     * @param bool $throw If the field is non-existent, whether to throw or simply return null, defaults to true.
      * @return string The field value.
      * @throws \RuntimeException If the field does not exist.
      */
-    public function getString(string $field): string
+    public function getString(string $field, bool $throw = true): ?string
     {
         if ($this->validateOne($field, self::EXISTS)) {
             return (string)$this->parsedBody[$field];
         } else {
-            throw new RuntimeException("{$field} does not exist.");
+            if($throw){
+                throw new RuntimeException("$field does not exist.");
+            }else{
+                return null;
+            }
         }
     }
 }
