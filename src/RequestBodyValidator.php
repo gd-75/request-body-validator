@@ -247,4 +247,24 @@ final class RequestBodyValidator
             }
         }
     }
+
+    /**
+     * Retrieves a field as non empty string.
+     * @param string $field The field to retrieve.
+     * @param bool $throw If the field is non-existent or empty, whether to throw or simply return null, defaults to true.
+     * @return string The field value.
+     * @throws \RuntimeException If the field does not exist.
+     */
+    public function getStringNotEmpty(string $field, bool $throw = true): ?string
+    {
+        if ($this->validateOne($field, self::NOT_EMPTY)) {
+            return (string)$this->parsedBody[$field];
+        } else {
+            if ($throw) {
+                throw new RuntimeException("$field is empty or does not exist.");
+            } else {
+                return null;
+            }
+        }
+    }
 }

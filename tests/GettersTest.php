@@ -129,14 +129,26 @@ class GettersTest extends TestCase
     }
 
     /**
-     * Tests the float getter.
+     * Tests the string getter.
      * @test
      */
     public function getString()
     {
-        $this->assertEquals("lorem", $this->rbv->getString("text"));
-        $this->assertEquals("27.5", $this->rbv->getString("numeric1"));
-        $this->assertEquals("1.22", $this->rbv->getString("floating"));
-        $this->assertEquals(null, $this->rbv->getString("qdqf", false));
+        $this->assertSame("lorem", $this->rbv->getString("text"));
+        $this->assertSame("27.5", $this->rbv->getString("numeric1"));
+        $this->assertSame("1.22", $this->rbv->getString("floating"));
+        $this->assertSame("", $this->rbv->getString("empty"));
+        $this->assertSame(null, $this->rbv->getString("qdqf", false));
+    }
+
+    /**
+     * Tests the string not empty getter.
+     * @test
+     */
+    public function getStringNotEmpty(){
+        $this->assertSame("lorem", $this->rbv->getStringNotEmpty("text"));
+        $this->assertSame("27.5", $this->rbv->getStringNotEmpty("numeric1"));
+        $this->assertSame("1.22", $this->rbv->getStringNotEmpty("floating"));
+        $this->assertSame(null, $this->rbv->getStringNotEmpty("empty", false));
     }
 }
