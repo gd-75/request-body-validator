@@ -61,6 +61,7 @@ class GettersTest extends TestCase
     public function errorsRetrievalTest()
     {
         $this->rbv->validateMultiple(["datetime", "invalidDatetime"], RequestBodyValidator::DATE_FORMAT);
+        $this->rbv->getSingleCheckboxVal("gregergerger");
         $this->assertSame(["invalidDatetime"], $this->rbv->getFieldsWithErrors());
     }
 

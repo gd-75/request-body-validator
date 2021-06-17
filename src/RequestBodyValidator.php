@@ -102,6 +102,18 @@ final class RequestBodyValidator
      */
     public function validateOne($field, int $criteria): bool
     {
+        return $this->internalValidate($field, $criteria, true);
+    }
+
+    /**
+     * Internal validator, used to disable error tracking.
+     * @param mixed $field The name of the field to validate.
+     * @param int $criteria The criteria to validate with (see class constants).
+     * @param bool $trackErrors Whether to count invalid criteria as error, defaults to false.
+     * @return bool Whether the criteria was validated.
+     */
+    private function internalValidate($field, int $criteria, bool $trackErrors = false): bool
+    {
         if ($this->parsedBody !== null) {
             if ($criteria === self::EXISTS) {
                 $status =
@@ -129,7 +141,7 @@ final class RequestBodyValidator
                 throw new InvalidArgumentException("Invalid validation '$criteria'.");
             }
 
-            if (!$status) {
+            if (!$status && $trackErrors) {
                 $this->errors[$field] = $criteria;
             }
 
@@ -146,7 +158,7 @@ final class RequestBodyValidator
      */
     public function getSingleCheckboxVal(string $field): bool
     {
-        return $this->validateOne($field, self::EXISTS);
+        return $this->internalValidate($field, self::EXISTS);
     }
 
     /**
@@ -181,7 +193,7 @@ final class RequestBodyValidator
      */
     public function getNumeric(string $field, bool $throw = true)
     {
-        if ($this->validateOne($field, self::NUMERIC)) {
+        if ($this->internalValidate($field, self::NUMERIC)) {
             return $this->parsedBody[$field];
         } else {
             if ($throw) {
@@ -201,7 +213,7 @@ final class RequestBodyValidator
      */
     public function getInt(string $field, bool $throw = true): ?int
     {
-        if ($this->validateOne($field, self::NUMERIC)) {
+        if ($this->internalValidate($field, self::NUMERIC)) {
             return (int)$this->parsedBody[$field];
         } else {
             if ($throw) {
@@ -221,7 +233,7 @@ final class RequestBodyValidator
      */
     public function getFloat(string $field, bool $throw = true): ?float
     {
-        if ($this->validateOne($field, self::NUMERIC)) {
+        if ($this->internalValidate($field, self::NUMERIC)) {
             return (float)$this->parsedBody[$field];
         } else {
             if ($throw) {
@@ -241,7 +253,7 @@ final class RequestBodyValidator
      */
     public function getString(string $field, bool $throw = true): ?string
     {
-        if ($this->validateOne($field, self::EXISTS)) {
+        if ($this->internalValidate($field, self::EXISTS)) {
             return (string)$this->parsedBody[$field];
         } else {
             if ($throw) {
@@ -261,7 +273,7 @@ final class RequestBodyValidator
      */
     public function getStringNotEmpty(string $field, bool $throw = true): ?string
     {
-        if ($this->validateOne($field, self::NOT_EMPTY)) {
+        if ($this->internalValidate($field, self::NOT_EMPTY)) {
             return (string)$this->parsedBody[$field];
         } else {
             if ($throw) {
