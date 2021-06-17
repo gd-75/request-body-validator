@@ -171,16 +171,27 @@ final class RequestBodyValidator
      */
     public function getDateTime(string $field, bool $throw = true): ?DateTime
     {
-        try {
-            return new DateTime($this->parsedBody[$field]);
-        } catch (Exception $e) {
-            if ($throw) {
-                throw new RuntimeException(
-                    "{$this->parsedBody[$field]} is not a valid date format.", $e->getCode(), $e
-                );
-            } else {
-                return null;
+        $previous = null;
+        // We could also use self::DATE_FORMAT, but we loose the chance to output the field value that caused the error
+        if ($this->internalValidate($field, self::NOT_EMPTY)) {
+            try {
+                return new DateTime($this->parsedBody[$field]);
+            } catch (Exception $e) {
+                $previous = $e;
             }
+        }
+
+        if ($throw) {
+            $message = $previous === null
+                ? "$field does not exist."
+                : "{$this->parsedBody[$field]} is not a valid date format.";
+            throw new RuntimeException(
+                $message,
+                $previous !== null ? $previous->getCode() : 0,
+                $previous
+            );
+        } else {
+            return null;
         }
     }
 

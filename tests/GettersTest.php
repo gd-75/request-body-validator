@@ -75,9 +75,19 @@ class GettersTest extends TestCase
 
         $this->assertEquals($datetime, $this->rbv->getDateTime("datetime"));
         $this->assertSame(null, $this->rbv->getDateTime("invalidDatetime", false));
+        $this->assertSame(null, $this->rbv->getDateTime("nonExistantDatetime", false));
 
-        $this->expectExceptionMessage("20203-21 180823 is not a valid date format");
-        $this->rbv->getDateTime("invalidDatetime");
+        try {
+            $this->rbv->getDateTime("invalidDatetime");
+        } catch (Exception $e) {
+            $this->assertEquals("20203-21 180823 is not a valid date format.", $e->getMessage());
+        }
+
+        try {
+            $this->rbv->getDateTime("nonExistantDatetime");
+        } catch (Exception $e) {
+            $this->assertEquals("nonExistantDatetime does not exist.", $e->getMessage());
+        }
     }
 
     /**
