@@ -145,7 +145,8 @@ class GettersTest extends TestCase
      * Tests the string not empty getter.
      * @test
      */
-    public function getStringNotEmpty(){
+    public function getStringNotEmpty()
+    {
         $this->assertSame("lorem", $this->rbv->getStringNotEmpty("text"));
         $this->assertSame("27.5", $this->rbv->getStringNotEmpty("numeric1"));
         $this->assertSame("1.22", $this->rbv->getStringNotEmpty("floating"));
