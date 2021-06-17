@@ -61,7 +61,7 @@ class GettersTest extends TestCase
     public function errorsRetrievalTest()
     {
         $this->rbv->validateMultiple(["datetime", "invalidDatetime"], RequestBodyValidator::DATE_FORMAT);
-        $this->assertEquals(["invalidDatetime"], $this->rbv->getFieldsWithErrors());
+        $this->assertSame(["invalidDatetime"], $this->rbv->getFieldsWithErrors());
     }
 
     /**
@@ -73,7 +73,7 @@ class GettersTest extends TestCase
         $datetime = new DateTime("2021-03-21 18:08:23");
 
         $this->assertEquals($datetime, $this->rbv->getDateTime("datetime"));
-        $this->assertEquals(null, $this->rbv->getDateTime("invalidDatetime", false));
+        $this->assertSame(null, $this->rbv->getDateTime("invalidDatetime", false));
 
         $this->expectExceptionMessage("20203-21 180823 is not a valid date format");
         $this->rbv->getDateTime("invalidDatetime");
@@ -85,8 +85,8 @@ class GettersTest extends TestCase
      */
     public function getCheckboxValue()
     {
-        $this->assertEquals(true, $this->rbv->getSingleCheckboxVal("checkboxPresent"));
-        $this->assertEquals(false, $this->rbv->getSingleCheckboxVal("waitItDoesNotExist"));
+        $this->assertSame(true, $this->rbv->getSingleCheckboxVal("checkboxPresent"));
+        $this->assertSame(false, $this->rbv->getSingleCheckboxVal("waitItDoesNotExist"));
     }
 
     /**
@@ -95,11 +95,11 @@ class GettersTest extends TestCase
      */
     public function getNumeric()
     {
-        $this->assertEquals("25", $this->rbv->getNumeric("numeric0"));
-        $this->assertEquals("27.5", $this->rbv->getNumeric("numeric1"));
-        $this->assertEquals(1.22, $this->rbv->getNumeric("floating"));
-        $this->assertEquals(36, $this->rbv->getNumeric("integer"));
-        $this->assertEquals(null, $this->rbv->getNumeric("edfiwgjewig", false));
+        $this->assertSame("25", $this->rbv->getNumeric("numeric0"));
+        $this->assertSame("27.5", $this->rbv->getNumeric("numeric1"));
+        $this->assertSame(1.22, $this->rbv->getNumeric("floating"));
+        $this->assertSame(36, $this->rbv->getNumeric("integer"));
+        $this->assertSame(null, $this->rbv->getNumeric("edfiwgjewig", false));
     }
 
     /**
@@ -108,11 +108,11 @@ class GettersTest extends TestCase
      */
     public function getInt()
     {
-        $this->assertEquals(25, $this->rbv->getInt("numeric0"));
-        $this->assertEquals(27, $this->rbv->getInt("numeric1"));
-        $this->assertEquals(1, $this->rbv->getInt("floating"));
-        $this->assertEquals(36, $this->rbv->getInt("integer"));
-        $this->assertEquals(null, $this->rbv->getInt("32zu542", false));
+        $this->assertSame(25, $this->rbv->getInt("numeric0"));
+        $this->assertSame(27, $this->rbv->getInt("numeric1"));
+        $this->assertSame(1, $this->rbv->getInt("floating"));
+        $this->assertSame(36, $this->rbv->getInt("integer"));
+        $this->assertSame(null, $this->rbv->getInt("32zu542", false));
     }
 
     /**
@@ -121,11 +121,11 @@ class GettersTest extends TestCase
      */
     public function getFloat()
     {
-        $this->assertEquals(25.0, $this->rbv->getFloat("numeric0"));
-        $this->assertEquals(27.5, $this->rbv->getFloat("numeric1"));
-        $this->assertEquals(1.22, $this->rbv->getFloat("floating"));
-        $this->assertEquals(36.0, $this->rbv->getFloat("integer"));
-        $this->assertEquals(null, $this->rbv->getFloat("apwqfqow", false));
+        $this->assertSame(25.0, $this->rbv->getFloat("numeric0"));
+        $this->assertSame(27.5, $this->rbv->getFloat("numeric1"));
+        $this->assertSame(1.22, $this->rbv->getFloat("floating"));
+        $this->assertSame(36.0, $this->rbv->getFloat("integer"));
+        $this->assertSame(null, $this->rbv->getFloat("apwqfqow", false));
     }
 
     /**
