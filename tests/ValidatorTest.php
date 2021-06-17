@@ -56,7 +56,8 @@ class ValidatorTest extends TestCase
      * Tests the exists validator.
      * @test
      */
-    public function existTest(){
+    public function existTest()
+    {
         $this->assertEquals(true, $this->rbv->validateOne("datetime", RequestBodyValidator::EXISTS));
         $this->assertEquals(false, $this->rbv->validateOne("404-notfound", RequestBodyValidator::EXISTS));
     }
@@ -65,7 +66,8 @@ class ValidatorTest extends TestCase
      * Tests the non empty validator.
      * @test
      */
-    public function nonEmptyTest(){
+    public function nonEmptyTest()
+    {
         $this->assertEquals(true, $this->rbv->validateOne("nonEmpty", RequestBodyValidator::NOT_EMPTY));
         $this->assertEquals(false, $this->rbv->validateOne("empty", RequestBodyValidator::NOT_EMPTY));
         $this->assertEquals(true, $this->rbv->validateOne("zero", RequestBodyValidator::NOT_EMPTY));
@@ -75,7 +77,8 @@ class ValidatorTest extends TestCase
      * Tests the numeric validator.
      * @test
      */
-    public function numericTest(){
+    public function numericTest()
+    {
         $this->assertEquals(true, $this->rbv->validateOne("numeric0", RequestBodyValidator::NUMERIC));
         $this->assertEquals(true, $this->rbv->validateOne("numeric1", RequestBodyValidator::NUMERIC));
         $this->assertEquals(false, $this->rbv->validateOne("text", RequestBodyValidator::NUMERIC));
@@ -85,7 +88,8 @@ class ValidatorTest extends TestCase
      * Tests the not numeric validator.
      * @test
      */
-    public function notNumericTest(){
+    public function notNumericTest()
+    {
         $this->assertEquals(false, $this->rbv->validateOne("numeric0", RequestBodyValidator::NOT_NUMERIC));
         $this->assertEquals(false, $this->rbv->validateOne("numeric1", RequestBodyValidator::NOT_NUMERIC));
         $this->assertEquals(true, $this->rbv->validateOne("text", RequestBodyValidator::NOT_NUMERIC));
@@ -95,7 +99,8 @@ class ValidatorTest extends TestCase
      * Tests the date format validator.
      * @test
      */
-    public function dateFormatTest(){
+    public function dateFormatTest()
+    {
         $this->assertEquals(true, $this->rbv->validateOne("datetime", RequestBodyValidator::DATE_FORMAT));
         $this->assertEquals(false, $this->rbv->validateOne("invalidDatetime", RequestBodyValidator::DATE_FORMAT));
     }
