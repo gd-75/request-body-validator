@@ -46,6 +46,7 @@ class ValidatorTest extends TestCase
                 "numeric1" => "27.5",
                 "text" => "lorem",
                 "checkboxPresentValue" => true,
+                "zero" => "0"
             ]
         );
         $this->rbv = new RequestBodyValidator($request);
@@ -67,6 +68,7 @@ class ValidatorTest extends TestCase
     public function nonEmptyTest(){
         $this->assertEquals(true, $this->rbv->validateOne("nonEmpty", RequestBodyValidator::NOT_EMPTY));
         $this->assertEquals(false, $this->rbv->validateOne("empty", RequestBodyValidator::NOT_EMPTY));
+        $this->assertEquals(true, $this->rbv->validateOne("zero", RequestBodyValidator::NOT_EMPTY));
     }
 
     /**

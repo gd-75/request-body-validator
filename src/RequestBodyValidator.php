@@ -110,6 +110,7 @@ final class RequestBodyValidator
      * @param mixed $field The name of the field to validate.
      * @param int $criteria The criteria to validate with (see class constants).
      * @param bool $trackErrors Whether to count invalid criteria as error, defaults to false.
+     * @note Empty is considered an empty value, not 0 or a string containing only 0
      * @return bool Whether the criteria was validated.
      */
     private function internalValidate($field, int $criteria, bool $trackErrors = false): bool
@@ -121,21 +122,21 @@ final class RequestBodyValidator
             } elseif ($criteria === self::NOT_EMPTY) {
                 $status =
                     isset($this->parsedBody[$field])
-                    && !empty($this->parsedBody[$field]);
+                    && $this->parsedBody[$field] !== "";
             } elseif ($criteria === self::NUMERIC) {
                 $status =
                     isset($this->parsedBody[$field])
-                    && !empty($this->parsedBody[$field])
+                    && $this->parsedBody[$field] !== ""
                     && is_numeric($this->parsedBody[$field]);
             } elseif ($criteria === self::NOT_NUMERIC) {
                 $status =
                     isset($this->parsedBody[$field])
-                    && !empty($this->parsedBody[$field])
+                    && $this->parsedBody[$field] !== ""
                     && !is_numeric($this->parsedBody[$field]);
             } elseif ($criteria === self::DATE_FORMAT) {
                 $status =
                     isset($this->parsedBody[$field])
-                    && !empty($this->parsedBody[$field])
+                    && $this->parsedBody[$field] !== ""
                     && strtotime($this->parsedBody[$field]) !== false;
             } else {
                 throw new InvalidArgumentException("Invalid validation '$criteria'.");
